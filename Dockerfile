@@ -44,7 +44,6 @@ RUN mkdir -p /etc/fdo/stores/manufacturer_keys && \
     mkdir -p /etc/fdo/stores/manufacturing_sessions && \
     mkdir -p /etc/fdo/stores/owner_vouchers
 COPY manufacturing-server.yml /etc/fdo/
-
 # then run /usr/lib/fdo/fdo-manufacturing-server
 
 # Configure the Rendezvous server
@@ -53,6 +52,7 @@ RUN mkdir -p /etc/fdo/stores/rendezvous_registered && \
 
 COPY rendezvous-server.yml /etc/fdo/
 # then run: LOG_LEVEL=info /usr/lib/fdo/fdo-rendezvous-server
+CMD LOG_LEVEL=info /usr/lib/fdo/fdo-rendezvous-server &
 
 # Configure the Owner server
 RUN mkdir -p /etc/fdo/stores/owner_vouchers && \
@@ -60,6 +60,18 @@ RUN mkdir -p /etc/fdo/stores/owner_vouchers && \
 COPY owner-onboarding-server.yml /etc/fdo
 # then run: LOG_LEVEL=info /usr/lib/fdo/fdo-owner-onboarding-server
 COPY serviceinfo-api-server.yml /etc/fdo
+
+RUN apt install --no-install-recommends -y procps 
 # then run: LOG_LEVEL=info /usr/lib/fdo/fdo-serviceinfo-api-server
 
+COPY rendezvous-info.yml /etc/fdo 
+ENV DEVICE_CREDENCIAL="/credential"
 
+COPY fido_run.sh /bin/
+RUN chmod +x /bin/fido_run.sh
+
+CMD /bin/fido_run.sh
+
+ENV PATH="/usr/lib/fdo/:$PATH"
+# ENTRYPOINT [ "/bin/sh" ]
+# use /usr/lib/fdo/fdo-client-linuxapp client 

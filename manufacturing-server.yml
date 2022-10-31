@@ -20,7 +20,7 @@ protocols:
     cert_path: /etc/fdo/keys/diun_cert.pem
 rendezvous_info:
   - deviceport: 8082
-    ip_address: 192.168.122.99
+    ip_address: 127.0.0.1
     ownerport: 8082
     protocol: http
 manufacturing:
