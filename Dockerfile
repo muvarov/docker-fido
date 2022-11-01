@@ -1,4 +1,4 @@
-FROM arm64v8/debian:sid-20221004
+FROM debian:sid-20221004
 
 RUN apt-get update && \
 	apt install --no-install-recommends -y git \
@@ -70,8 +70,21 @@ ENV DEVICE_CREDENCIAL="/credential"
 COPY fido_run.sh /bin/
 RUN chmod +x /bin/fido_run.sh
 
+RUN mkdir /fdoclient && \
+	fdo-owner-tool initialize-device 1234 /fdoclient/ownership_voucher /fdoclient/device_credential \
+	--device-cert-ca-chain /etc/fdo/keys/device_ca_cert.pem \
+	--device-cert-ca-private-key /etc/fdo/keys/device_ca_key.der \
+	--manufacturer-cert /etc/fdo/keys/manufacturer_cert.pem \
+	--rendezvous-info /etc/fdo/rendezvous-info.yml && \
+    fdo-owner-tool extend-ownership-voucher /fdoclient/ownership_voucher --current-owner-private-key /etc/fdo/keys/manufacturer_key.der --new-owner-cert /etc/fdo/keys/owner_cert.pem
+
 CMD /bin/fido_run.sh
 
 ENV PATH="/usr/lib/fdo/:$PATH"
+ENV DEVICE_CREDENTIAL="/fdoclient/device_credential"
+
+RUN GUID=`fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher |grep -Eio "Device GUID: [0-9]+.*$" |cut -d  " " -f 3` && \
+    cp /fdoclient/ownership_voucher /etc/fdo/stores/owner_vouchers/${GUID}
+
 # ENTRYPOINT [ "/bin/sh" ]
 # use /usr/lib/fdo/fdo-client-linuxapp client 

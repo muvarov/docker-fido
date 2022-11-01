@@ -11,7 +11,7 @@ bind: "0.0.0.0:8081"
 service_info_api_url: "http://localhost:8083/device_info"
 service_info_api_authentication:
   BearerToken:
-    token: Kpt5P/5flBkaiNSvDYS3cEdBQXJn2Zv9n1D50431/lo=
+    token: TestAuthToken
 owner_addresses:
   - transport: http
     addresses:
