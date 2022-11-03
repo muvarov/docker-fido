@@ -52,7 +52,6 @@ RUN mkdir -p /etc/fdo/stores/rendezvous_registered && \
 
 COPY rendezvous-server.yml /etc/fdo/
 # then run: LOG_LEVEL=info /usr/lib/fdo/fdo-rendezvous-server
-CMD LOG_LEVEL=info /usr/lib/fdo/fdo-rendezvous-server &
 
 # Configure the Owner server
 RUN mkdir -p /etc/fdo/stores/owner_vouchers && \
@@ -78,13 +77,16 @@ RUN mkdir /fdoclient && \
 	--rendezvous-info /etc/fdo/rendezvous-info.yml && \
     fdo-owner-tool extend-ownership-voucher /fdoclient/ownership_voucher --current-owner-private-key /etc/fdo/keys/manufacturer_key.der --new-owner-cert /etc/fdo/keys/owner_cert.pem
 
-CMD /bin/fido_run.sh
+# CMD /bin/fido_run.sh
 
 ENV PATH="/usr/lib/fdo/:$PATH"
 ENV DEVICE_CREDENTIAL="/fdoclient/device_credential"
+ENV DEVICE_CREDENTIAL_FILENAME="/fdoclient/device_credential"
+ENV MANUFACTURING_INFO="testdevice"
+ENV DIUN_PUB_KEY_INSECURE="true"
 
 RUN GUID=`fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher |grep -Eio "Device GUID: [0-9]+.*$" |cut -d  " " -f 3` && \
-    cp /fdoclient/ownership_voucher /etc/fdo/stores/owner_vouchers/${GUID}
+    fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher  --outform cose > /etc/fdo/stores/owner_vouchers/${GUID}.ov
 
 # ENTRYPOINT [ "/bin/sh" ]
 # use /usr/lib/fdo/fdo-client-linuxapp client 
