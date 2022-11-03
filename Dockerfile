@@ -86,7 +86,7 @@ ENV MANUFACTURING_INFO="testdevice"
 ENV DIUN_PUB_KEY_INSECURE="true"
 
 RUN GUID=`fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher |grep -Eio "Device GUID: [0-9]+.*$" |cut -d  " " -f 3` && \
-    fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher  --outform cose > /etc/fdo/stores/owner_vouchers/${GUID}.ov
+    fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher  --outform cose > /etc/fdo/stores/owner_vouchers/${GUID}
 
 # ENTRYPOINT [ "/bin/sh" ]
 # use /usr/lib/fdo/fdo-client-linuxapp client 
