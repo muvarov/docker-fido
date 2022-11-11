@@ -15,6 +15,6 @@ service_info_api_authentication:
 owner_addresses:
   - transport: http
     addresses:
-      - ip_address: 127.0.0.1
+      - ip_address: 147.75.55.125
     port: 8081
 report_to_rendezvous_endpoint_enabled: true

@@ -1,0 +1,29 @@
+1. Change external IP address of FDO server
+
+./owner-onboarding-server.yml:      - ip_address: 147.75.55.125
+./rendezvous-info.yml:  ip_address: 147.75.55.125
+
+2. build docker image
+./build.sh
+
+3. save onboarding file
+File client/etc/device_credential will be created. Archive it to client.tar.gz
+
+4. run docker
+./run.sh
+
+5. run FDO server
+/bin/fido_run.sh
+
+
+----- test with FDO client  -------
+export DEVICE_CREDENTIAL=/etc/device_credential
+
+/usr/bin/fdo-client-linuxapp
+ 1970-01-01T00:22:22.057Z INFO  fdo_client_linuxapp > Found device credential at FileSystemPath { path: "/etc/device_credential", deactivation_method: None }
+ 1970-01-01T00:22:22.136Z INFO  fdo_client_linuxapp > Got TO2 addresses: ["http://147.75.55.125:8081"]
+ 1970-01-01T00:22:22.137Z INFO  fdo_client_linuxapp > Performing TO2 protocol, URL: "http://147.75.55.125:8081"
+ 1970-01-01T00:22:22.242Z INFO  fdo_client_linuxapp::serviceinfo > Creating file "/root/resolv.conf" with 52 bytes (mode 384)
+ 1970-01-01T00:22:22.267Z INFO  fdo_client_linuxapp              > Secure Device Onboarding DONE
+
+
