@@ -85,7 +85,8 @@ ENV DEVICE_CREDENTIAL_FILENAME="/fdoclient/device_credential"
 ENV MANUFACTURING_INFO="testdevice"
 ENV DIUN_PUB_KEY_INSECURE="true"
 
-RUN GUID=`fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher |grep -Eio "Device GUID: [0-9]+.*$" |cut -d  " " -f 3` && \
+RUN GUID=`fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher | grep  "Device GUID:" | awk '{print $3}'` && \
+    echo "GUID=${GUID}" && \
     fdo-owner-tool dump-ownership-voucher /fdoclient/ownership_voucher  --outform cose > /etc/fdo/stores/owner_vouchers/${GUID}
 
 # ENTRYPOINT [ "/bin/sh" ]
